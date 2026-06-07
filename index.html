@@ -2309,19 +2309,20 @@
     btn.disabled = true;
 
     try {
+      const fd = new FormData();
+      fd.append('name',     name   || 'anonymous');
+      fd.append('reason',   reason || '(not specified)');
+      fd.append('message',  body);
+      fd.append('_subject', `New message from ${name || 'anonymous'} — ${reason || 'site'}`);
+      fd.append('_template', 'table');
+      fd.append('_captcha', 'false');
       const res = await fetch('https://formsubmit.co/ajax/a5af29ce77a7e69dea5b490b66d20cf3', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({
-          name:    name   || 'anonymous',
-          reason:  reason || '(not specified)',
-          message: body,
-          _subject: `New message from ${name || 'anonymous'} — ${reason || 'site'}`,
-          _template: 'table',
-          _captcha: 'false'
-        })
+        headers: { 'Accept': 'application/json' },
+        body: fd
       });
-      if (!res.ok) throw new Error('send failed');
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data.success !== 'true') throw new Error('send failed');
 
       document.getElementById('msg-form-wrap').style.display = 'none';
       document.getElementById('msg-success').style.display   = 'block';
