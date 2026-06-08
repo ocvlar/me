@@ -382,6 +382,18 @@
       text-shadow: 0 0 8px rgba(140,180,255,0.5);
     }
 
+    /* Mobile: scale ME section text to match Version / INSPO compactness */
+    @media (max-width: 768px) {
+      .me-quote { font-size: 13px; line-height: 1.55; }
+      .me-quote-src { font-size: 10px; margin-bottom: 32px; }
+      .me-section-title { font-size: 13px; letter-spacing: 0.06em; margin: 30px 0 16px; }
+      .me-section-title span[style*="font-size:13px"] { font-size: 11px !important; }
+      .me-text { font-size: 12px; line-height: 1.7; }
+      .me-chips { font-size: 11px; }
+      .te-section { font-size: 13px; margin: 18px 0 6px; }
+      .te-body { font-size: 12px; line-height: 1.7; }
+    }
+
     @keyframes biosBlinkDot {
       0%,100% { opacity:0.2; }
       50%      { opacity:1; box-shadow:0 0 6px rgba(140,175,220,0.7); }
