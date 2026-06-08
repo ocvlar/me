@@ -426,50 +426,6 @@
     }
 
 
-    .xmb-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-end;
-      cursor: pointer;
-      transition: transform 0.25s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.25s;
-      padding: 0 6px;
-      opacity: 0.35;
-      transform: scale(0.72) translateY(10px);
-    }
-    .xmb-item.xmb-active {
-      opacity: 1;
-      transform: scale(1.15) translateY(-8px);
-    }
-    .xmb-item.xmb-near {
-      opacity: 0.65;
-      transform: scale(0.88) translateY(-2px);
-    }
-    .xmb-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 6px;
-      background: rgba(8,14,30,0.9);
-      border: 1px solid rgba(120,160,220,0.25);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 8px;
-      color: rgba(140,175,220,0.7);
-      letter-spacing: 0.03em;
-      transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
-      text-align: center;
-      line-height: 1.2;
-      padding: 4px;
-    }
-    .xmb-item.xmb-active .xmb-icon {
-      border-color: rgba(160,200,255,0.7);
-      background: rgba(20,40,80,0.9);
-      box-shadow: 0 0 14px rgba(140,180,255,0.35), 0 0 30px rgba(100,150,255,0.15);
-      color: rgba(200,225,255,0.95);
-    }
-
     .ewp-yap-btn {
       cursor: pointer;
       font-size: 14px;
@@ -1567,44 +1523,8 @@
   }
   </script>
   <script>
-  const GAMES = [
-    'Infamous',
-    'Disco Elysium',
-    'Life is Strange',
-    'Detroit: Become Human',
-    'Cyberpunk 2077',
-    'Silent Hill 2',
-    'Vampyr',
-    'Fallout 76',
-    'Tomb Raider (2013)',
-    'Nier: Automata',
-  ];
   let gameLoaded = false;
-  let xmbActive = 0;
 
-  function buildXMB() {
-    const container = document.getElementById('xmb-items');
-    const label = document.getElementById('xmb-label');
-    if (!container) return;
-    container.innerHTML = GAMES.map((g, i) => {
-      return '<div class="xmb-item" id="xmb-' + i + '" onclick="xmbSelect(' + i + ')">' +
-        '<div class="xmb-icon">' + g + '</div>' +
-        '</div>';
-    }).join('');
-    xmbSelect(Math.floor(GAMES.length / 2));
-  }
-
-  function xmbSelect(idx) {
-    xmbActive = idx;
-    const label = document.getElementById('xmb-label');
-    GAMES.forEach((g, i) => {
-      const el = document.getElementById('xmb-' + i);
-      if (!el) return;
-      const dist = Math.abs(i - idx);
-      el.className = 'xmb-item' + (dist === 0 ? ' xmb-active' : dist === 1 ? ' xmb-near' : '');
-    });
-    if (label) label.textContent = GAMES[idx];
-  }
   function toggleGameSection() {
     const wrap = document.getElementById('disc-slot-wrap');
     const section = document.getElementById('game-section');
@@ -1613,7 +1533,6 @@
       wrap.classList.add('loaded');
       disc.style.transform = 'translateX(0px)';
       setTimeout(() => {
-        buildXMB();
         section.style.display = 'block';
         requestAnimationFrame(() => { section.style.opacity = '1'; });
         gameLoaded = true;
@@ -2684,16 +2603,6 @@
 
         <!-- Game section — XMB style -->
         <div id="game-section" style="display:none;opacity:0;transition:opacity 0.4s ease;margin-top:28px;margin-bottom:8px;">
-
-          <div class="me-chips" style="margin-bottom:18px;">// GAME LIBRARY</div>
-
-          <!-- XMB row -->
-          <div id="xmb-row" style="position:relative;">
-            <!-- items injected by JS -->
-            <div id="xmb-items" style="display:flex;gap:0;align-items:flex-end;justify-content:center;height:100px;"></div>
-            <!-- selected label -->
-            <div id="xmb-label" style="text-align:center;margin-top:14px;font-family:'Share Tech Mono',monospace;font-size:13px;color:rgba(200,225,255,0.95);letter-spacing:0.08em;text-shadow:0 0 8px rgba(160,210,255,0.7);min-height:20px;transition:opacity 0.2s;"></div>
-          </div>
 
           <!-- Instagram bar -->
           <div onclick="window.open('https://www.instagram.com/systemflaw/','_blank')"
