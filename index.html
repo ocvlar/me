@@ -407,6 +407,17 @@
       #me-summary-view { font-size: 12px; line-height: 1.7; padding: 32px 0 28px; }
       .sum-num { font-size: 11px; }
       .sum-last { font-size: 11px; margin-top: 18px; }
+      /* ANALYZE tooltip — keep within viewport, allow wrapping */
+      .me-mini-tooltip {
+        white-space: normal;
+        width: max-content;
+        max-width: 200px;
+        left: auto;
+        right: 0;
+        transform: none;
+        font-size: 11px;
+        line-height: 1.4;
+      }
     }
 
     @keyframes biosBlinkDot {
