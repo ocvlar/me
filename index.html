@@ -1186,11 +1186,16 @@
         transition: transform 0.52s cubic-bezier(0.16,1,0.3,1) !important;
       }
       #panel-experience.node-active #ew-sphere-side {
-        transform: translateX(-30%) scale(0.65) !important;
+        transform: translateX(-28%) scale(0.78) !important;
       }
-      /* Hide labels on mobile when active — they don't scale cleanly */
-      #panel-experience.node-active #ew-labels {
-        display: none !important;
+      /* Dim non-active labels, keep the active one visible */
+      #panel-experience.node-active #ew-labels .ew-sec-label:not(.active-label) {
+        opacity: 0 !important;
+        pointer-events: none !important;
+      }
+      #panel-experience.node-active #ew-labels .ew-sec-label.active-label .ew-sec-name {
+        font-size: 14px !important;
+        max-width: 110px !important;
       }
       #panel-experience.node-active #ew-hint {
         display: none !important;
@@ -1223,6 +1228,12 @@
       .ewp-sublabel { font-size: 8px !important; }
       .ewp-footer { font-size: 9px !important; }
       .ewp-yap-btn { font-size: 10px !important; }
+      /* DIRECTED_WORK folder — shrink to fit narrow mobile content side */
+      .op-folder {
+        transform: scale(0.6) !important;
+        transform-origin: top center !important;
+        margin: -16px auto -68px !important;
+      }
     }
 
     /* Content side inner padding/header */
