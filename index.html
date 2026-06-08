@@ -514,6 +514,7 @@
     .nav-dot {
       position: absolute;
       left: -58px;
+      top: 0;
       width: 11px;
       height: 11px;
       border-radius: 50%;
@@ -525,6 +526,9 @@
       transition: none;
       pointer-events: none;
       z-index: 2;
+      will-change: transform;
+      transform: translate3d(0, 0, 0);
+      backface-visibility: hidden;
     }
     .nav-curve {
       position: absolute;
@@ -3197,7 +3201,7 @@ function _animateDot() {
     _dotT   = _dotTargetT;
     _dotRAF = null;
   } else {
-    _dotT  += diff * 0.12;
+    _dotT  += diff * 0.22;
     _dotRAF = requestAnimationFrame(_animateDot);
   }
 
@@ -3208,15 +3212,16 @@ function _animateDot() {
   const pt  = _curvePts[Math.max(0, Math.min(_curvePts.length - 1, idx))];
 
   // cv is positioned at CSS left (from .nav-curve) and top=-PAD relative to .icons-row
-  // pt.x/pt.y are in canvas px — convert to icons-row coords:
-  // row_x = cvCssLeft + pt.x
-  // row_y = -PAD + pt.y
+  // pt.x/pt.y are in canvas px — convert to icons-row coords, then translate the
+  // dot via transform (GPU compositor, no layout) instead of left/top reflows.
   const DOT_R = 5;
   const PAD2  = 24;
   const cvCssLeft = parseInt(cv.style.left) || -108;
   const cvCssTop  = parseInt(cv.style.top)  || -PAD2;
-  dot.style.left = (cvCssLeft + pt.x - DOT_R) + 'px';
-  dot.style.top  = (cvCssTop  + pt.y - DOT_R) + 'px';
+  // CSS anchors the dot at (-58, 0); transform shifts to the target row coords.
+  const tx = cvCssLeft + pt.x - DOT_R - (-58);
+  const ty = cvCssTop  + pt.y - DOT_R - 0;
+  dot.style.transform = 'translate3d(' + tx + 'px, ' + ty + 'px, 0)';
 }
 
 function updateNavDot(item) {
