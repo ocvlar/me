@@ -3201,7 +3201,8 @@ function _animateDot() {
     _dotT   = _dotTargetT;
     _dotRAF = null;
   } else {
-    _dotT  += diff * 0.22;
+    const lerp = window.innerWidth <= 768 ? 0.22 : 0.12;
+    _dotT  += diff * lerp;
     _dotRAF = requestAnimationFrame(_animateDot);
   }
 
