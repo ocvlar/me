@@ -2216,6 +2216,23 @@
     line-height: 2;
     text-align: center;
   }
+  @media (max-width: 768px) {
+    #tri-modal {
+      align-items: flex-start;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 16px 16px 48px;
+    }
+    #tri-modal-box {
+      width: 100%;
+      max-width: 100%;
+      max-height: calc(100vh - 40px);
+      max-height: calc(100dvh - 40px);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      flex-shrink: 0;
+    }
+  }
 </style>
 
 <div id="tri-modal" onclick="closeTriModal()">
@@ -2309,20 +2326,16 @@
     btn.disabled = true;
 
     try {
-      const fd = new FormData();
-      fd.append('name',     name   || 'anonymous');
-      fd.append('reason',   reason || '(not specified)');
-      fd.append('message',  body);
-      fd.append('_subject', `New message from ${name || 'anonymous'} — ${reason || 'site'}`);
-      fd.append('_template', 'table');
-      fd.append('_captcha', 'false');
-      const res = await fetch('https://formsubmit.co/ajax/a5af29ce77a7e69dea5b490b66d20cf3', {
+      const res = await fetch('https://formspree.io/f/mlgpavdr', {
         method: 'POST',
-        headers: { 'Accept': 'application/json' },
-        body: fd
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          name:    name   || 'anonymous',
+          reason:  reason || '(not specified)',
+          message: body
+        })
       });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || data.success !== 'true') throw new Error('send failed');
+      if (!res.ok) throw new Error(`send failed: ${res.status}`);
 
       document.getElementById('msg-form-wrap').style.display = 'none';
       document.getElementById('msg-success').style.display   = 'block';
@@ -2330,6 +2343,7 @@
         professionalGlitch(() => { closeTriModal(); });
       }, 2500);
     } catch (err) {
+      console.error('[msg]', err);
       btn.textContent = 'RETRY — SEND FAILED';
       btn.disabled = false;
     }
