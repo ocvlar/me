@@ -3327,24 +3327,39 @@ items.forEach((item, i) => {
 });
 
 
-function _bootNavCurve() {
-  // Wait for fonts to ensure .icons-row height is final, then run after
-  // a layout-stable frame so the curve always lands in the same spot.
-  const run = () => requestAnimationFrame(() => {
-    const row = document.querySelector('.icons-row');
-    if (!row || row.offsetHeight === 0) {
-      requestAnimationFrame(run);
-      return;
-    }
-    initNavCurve();
-  });
-  if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(run);
-  } else {
-    run();
-  }
+// Eager boot: don't wait for `load` (which blocks on every image + the WebGL
+// sphere and races the BIOS intro). Start trying as soon as this script runs,
+// retry each frame until the row has real layout, and let a ResizeObserver
+// re-init if the row ever truly resizes. This makes the curve appear the same
+// way on every reload regardless of cache state.
+function _tryInitNavCurve() {
+  const row = document.querySelector('.icons-row');
+  if (!row || row.offsetHeight === 0) return false;
+  initNavCurve();
+  return true;
 }
-window.addEventListener('load', _bootNavCurve);
+(function _pollBootNav() {
+  if (_tryInitNavCurve()) return;
+  requestAnimationFrame(_pollBootNav);
+})();
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(() => { _tryInitNavCurve(); });
+}
+window.addEventListener('load', () => { _tryInitNavCurve(); });
+// bfcache: re-init if a back/forward restore left us with no curve drawn.
+window.addEventListener('pageshow', () => {
+  if (_curvePts.length === 0) _tryInitNavCurve();
+});
+// Observe the row itself so any genuine size change redraws the curve.
+(function _watchRowResize() {
+  const row = document.querySelector('.icons-row');
+  if (!row) { requestAnimationFrame(_watchRowResize); return; }
+  if (typeof ResizeObserver !== 'function') return;
+  const ro = new ResizeObserver(() => {
+    if (row.offsetHeight > 0) initNavCurve();
+  });
+  ro.observe(row);
+})();
 // Re-init on window resize only (not on hover-driven row width changes)
 window.addEventListener('resize', () => {
   if (_curvePts.length > 0) initNavCurve();
