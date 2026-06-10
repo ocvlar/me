@@ -2976,7 +2976,7 @@ window._mobileGated = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || w
       splash.style.opacity       = '1';
       splash.style.pointerEvents = 'none';
       const tagline = document.getElementById('psy-tagline');
-      playSound(_bufSplash);
+      if (_actx.state === 'running') playSound(_bufSplash);
       setTimeout(() => {
         logo.style.opacity       = '1';
         logo.style.letterSpacing = '0.55em';
